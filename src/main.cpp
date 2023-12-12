@@ -48,14 +48,20 @@ void sendMessage(const string &message, const string &queueUrl);
 
 int main() {
   while (true) {
-    string input = waitForResponse(kCompactionRequestQueueUrl);
+    string base64Input = waitForResponse(kCompactionRequestQueueUrl);
+    Aws::Utils::ByteBuffer inputBuffer = Aws::Utils::HashingUtils::Base64Decode(base64Input);
+    std::string input(reinterpret_cast<char*>(inputBuffer.GetUnderlyingData()), inputBuffer.GetLength());
+
 
     string output = nullptr;
     CompactionServiceOptionsOverride options_override;
     Status s = DB::OpenAndCompact(kDBPath, kDBCompactionOutputPath, input, &output, options_override);
     assert(s.ok());
 
-    // sendMessage(output, kCompactionResponseQueueUrl);
+    Aws::Utils::ByteBuffer outputBuffer(reinterpret_cast<const unsigned char*>(output.c_str()), output.length());
+    std::string base64Output = Aws::Utils::HashingUtils::Base64Encode(outputBuffer);
+
+    // sendMessage(base64Output, kCompactionResponseQueueUrl);
   }
 
   return 0;
