@@ -1,3 +1,12 @@
+git clone --depth 1 https://github.com/GeoffreyXue/metaarrow arrow
+cd arrow/cpp
+mkdir build
+cd build
+cmake .. -DARROW_PARQUET=ON -DARROW_JSON=ON -DARROW_BUILD_STATIC=OFF -DARROW_BUILD_SHARED=ON -GNinja
+ninja -j 8
+ninja install
+cd ../../..
+
 git clone -b compactor --depth 1 https://github.com/GeoffreyXue/metarocks rocksdb
 cd rocksdb
 mkdir build
