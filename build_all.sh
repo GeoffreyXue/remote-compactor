@@ -11,7 +11,7 @@ git clone -b compactor --depth 1 https://github.com/GeoffreyXue/metarocks rocksd
 cd rocksdb
 mkdir build
 cd build
-cmake .. -DCMAKE_PREFIX_PATH=/usr/local/ -DCMAKE_BUILD_TYPE=Debug -DROCKSDB_BUILD_SHARED=OFF -DWITH_TESTS=OFF -DWITH_ALL_TESTS=OFF -DWITH_TOOLS=OFF -GNinja
+cmake .. -DCMAKE_PREFIX_PATH=/usr/local/ -DCMAKE_BUILD_TYPE=Debug -DROCKSDB_BUILD_SHARED=OFF -DWITH_TESTS=OFF -DWITH_ALL_TESTS=OFF -DWITH_TOOLS=OFF -DWITH_TRACE_TOOLS=OFF -DWITH_CORE_TOOLS=OFF -GNinja
 ninja -j 8
 cd ../..
 
