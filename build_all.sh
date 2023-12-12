@@ -1,4 +1,4 @@
-git clone -b compactor --depth 1 https://github.com/GeoffreyXue/metarocks/tree/compactor rocksdb
+git clone -b compactor --depth 1 https://github.com/GeoffreyXue/metarocks rocksdb
 cd rocksdb
 mkdir build
 cd build
@@ -6,7 +6,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Debug -GNinja
 ninja -j 8
 cd ../..
 
-git clone --recurse-submodules https://github.com/aws/aws-sdk-cpp
+git clone --recurse-submodules --depth 1 https://github.com/aws/aws-sdk-cpp
 cd aws-sdk-cpp/
 mkdir sdk_build
 cd sdk_build/
