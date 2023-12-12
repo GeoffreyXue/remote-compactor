@@ -1,0 +1,4 @@
+rocksdb
+aws-sdk-cpp
+build
+.cache
