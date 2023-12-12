@@ -1,0 +1,13 @@
+{
+    "tasks": [
+      {
+        "label": "build_remote_compaction",
+        "type": "shell",
+        "command": "make",
+        "options": {
+          "cwd": "${workspaceFolder}/compaction-server/build"
+        }
+      }
+    ],
+    "version": "2.0.0"
+  }
