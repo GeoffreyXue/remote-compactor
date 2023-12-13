@@ -58,6 +58,7 @@ int main() {
     std::string input(reinterpret_cast<char*>(inputBuffer.GetUnderlyingData()), inputBuffer.GetLength());
 
     if (input.empty()) {
+      cout << "it was nothing" << endl;
       continue;
     }
 
