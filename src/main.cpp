@@ -38,10 +38,10 @@ using ROCKSDB_NAMESPACE::Options;
 using ROCKSDB_NAMESPACE::Status;
 using ROCKSDB_NAMESPACE::CompactionServiceOptionsOverride;
 
-string kDBPath = "./rocksdb/rocksdb_parquet_example";
-string kDBCompactionOutputPath = "./output";
+string kDBPath = "/home/ubuntu/s3fuse/conn.db";
+string kDBCompactionOutputPath = "/home/ubuntu/s3fuse/conn.db/output";
 string kCompactionRequestQueueUrl = "https://sqs.us-east-2.amazonaws.com/848490464384/request.fifo";
-// string kCompactionResponseQueueUrl ="https://sqs.us-east-2.amazonaws.com/848490464384/request.fifo";
+string kCompactionResponseQueueUrl ="https://sqs.us-east-2.amazonaws.com/848490464384/response.fifo";
 
 string waitForResponse(const string &queueUrl);
 void sendMessage(const string &message, const string &queueUrl);
@@ -53,7 +53,7 @@ int main() {
     std::string input(reinterpret_cast<char*>(inputBuffer.GetUnderlyingData()), inputBuffer.GetLength());
 
 
-    string output = nullptr;
+    string output;
     CompactionServiceOptionsOverride options_override;
     Status s = DB::OpenAndCompact(kDBPath, kDBCompactionOutputPath, input, &output, options_override);
     assert(s.ok());
@@ -61,7 +61,7 @@ int main() {
     Aws::Utils::ByteBuffer outputBuffer(reinterpret_cast<const unsigned char*>(output.c_str()), output.length());
     std::string base64Output = Aws::Utils::HashingUtils::Base64Encode(outputBuffer);
 
-    // sendMessage(base64Output, kCompactionResponseQueueUrl);
+    sendMessage(base64Output, kCompactionResponseQueueUrl);
   }
 
   return 0;
