@@ -3,7 +3,7 @@
       {
         "label": "build_remote_compaction",
         "type": "shell",
-        "command": "make",
+        "command": "ninja",
         "options": {
           "cwd": "${workspaceFolder}/build"
         }
