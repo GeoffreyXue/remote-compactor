@@ -17,10 +17,14 @@
 
 #include <chrono>
 #include <iostream>
+#include <memory>
 #include <string>
 
 #include "rocksdb/db.h"
+#include "rocksdb/env.h"
 #include "rocksdb/options.h"
+#include "rocksdb/statistics.h"
+#include "rocksdb/table.h"
 
 #include <aws/core/Aws.h>
 #include <aws/core/utils/HashingUtils.h>
@@ -57,8 +61,25 @@ int main() {
     }
 
     string output;
-    CompactionServiceOptionsOverride options_override;
-    Status s = DB::OpenAndCompact(kDBPath, kDBCompactionOutputPath, input, &output, options_override);
+    CompactionServiceOptionsOverride options;
+    options.env = rocksdb::Env::Default();
+    // shouldn't be required
+    // options.file_checksum_gen_factory = rocksdb::GetFileChecksumGenCrc32cFactory();
+    // not really sure
+    // options.comparator = rocksdb::BytewiseComparator();
+    // pretty sure this is optional
+    // options.merge_operator = rocksdb::GetAggMergeOperator();
+    // pretty sure this is optional as well
+    // options.compaction_filter = 
+    // assuming this is optional as well
+    // options.compaction_filter_factory = 
+    // feature, likely optional
+    // options.prefix_extractor = options_.prefix_extractor;
+    options.table_factory = shared_ptr<rocksdb::TableFactory>(rocksdb::NewBlockBasedTableFactory());
+    // options.sst_partitioner_factory = rocksdb::SstPartitionerFixedPrefixFactory();
+    options.statistics = rocksdb::CreateDBStatistics();
+
+    Status s = DB::OpenAndCompact(kDBPath, kDBCompactionOutputPath, input, &output, options);
     assert(s.ok());
 
     Aws::Utils::ByteBuffer outputBuffer(reinterpret_cast<const unsigned char*>(output.c_str()), output.length());
