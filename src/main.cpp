@@ -53,6 +53,7 @@ void sendMessage(const string &message, const string &queueUrl);
 int main() {
   while (true) {
     string base64Input = waitForResponse(kCompactionRequestQueueUrl);
+    cout << "received something" << endl;
     Aws::Utils::ByteBuffer inputBuffer = Aws::Utils::HashingUtils::Base64Decode(base64Input);
     std::string input(reinterpret_cast<char*>(inputBuffer.GetUnderlyingData()), inputBuffer.GetLength());
 
@@ -80,10 +81,15 @@ int main() {
     options.statistics = rocksdb::CreateDBStatistics();
 
     Status s = DB::OpenAndCompact(kDBPath, kDBCompactionOutputPath, input, &output, options);
-    assert(s.ok());
+    if (!s.ok()) {
+      cout << "something bad happened" << endl;
+      continue;
+    }
 
     Aws::Utils::ByteBuffer outputBuffer(reinterpret_cast<const unsigned char*>(output.c_str()), output.length());
     std::string base64Output = Aws::Utils::HashingUtils::Base64Encode(outputBuffer);
+
+    cout << "sending response" << endl;
 
     sendMessage(base64Output, kCompactionResponseQueueUrl);
   }
