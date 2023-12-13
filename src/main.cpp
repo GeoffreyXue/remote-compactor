@@ -52,6 +52,9 @@ int main() {
     Aws::Utils::ByteBuffer inputBuffer = Aws::Utils::HashingUtils::Base64Decode(base64Input);
     std::string input(reinterpret_cast<char*>(inputBuffer.GetUnderlyingData()), inputBuffer.GetLength());
 
+    if (input.empty()) {
+      continue;
+    }
 
     string output;
     CompactionServiceOptionsOverride options_override;
