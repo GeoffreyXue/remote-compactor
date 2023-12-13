@@ -83,7 +83,7 @@ string waitForResponse(const string &queueUrl) {
     receive_request.SetMaxNumberOfMessages(
         1); // Max number of messages to receive
     receive_request.SetVisibilityTimeout(30); // Visibility timeout
-    receive_request.SetWaitTimeSeconds(20);   // Long polling wait time
+    receive_request.SetWaitTimeSeconds(100000);   // Long polling wait time
 
     // Receive the message
     auto receive_outcome = sqs.ReceiveMessage(receive_request);
