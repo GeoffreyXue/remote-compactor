@@ -53,14 +53,15 @@ void sendMessage(const string &message, const string &queueUrl);
 int main() {
   while (true) {
     string base64Input = waitForResponse(kCompactionRequestQueueUrl);
-    cout << "received something" << endl;
-    Aws::Utils::ByteBuffer inputBuffer = Aws::Utils::HashingUtils::Base64Decode(base64Input);
-    std::string input(reinterpret_cast<char*>(inputBuffer.GetUnderlyingData()), inputBuffer.GetLength());
 
-    if (input.empty()) {
-      cout << "it was nothing" << endl;
+    if (base64Input.empty()) {
+      cout << "Hit timeout, continuing..." << endl;
       continue;
     }
+
+    cout << "Received message. Processing..." << endl;
+    Aws::Utils::ByteBuffer inputBuffer = Aws::Utils::HashingUtils::Base64Decode(base64Input);
+    std::string input(reinterpret_cast<char*>(inputBuffer.GetUnderlyingData()), inputBuffer.GetLength());
 
     string output;
     CompactionServiceOptionsOverride options;
@@ -83,14 +84,14 @@ int main() {
 
     Status s = DB::OpenAndCompact(kDBPath, kDBCompactionOutputPath, input, &output, options);
     if (!s.ok()) {
-      cout << "something bad happened" << endl;
+      cout << "Something bad happened" << endl;
       continue;
     }
 
     Aws::Utils::ByteBuffer outputBuffer(reinterpret_cast<const unsigned char*>(output.c_str()), output.length());
     std::string base64Output = Aws::Utils::HashingUtils::Base64Encode(outputBuffer);
 
-    cout << "sending response" << endl;
+    cout << "Finished processing. Sending response..." << endl;
 
     sendMessage(base64Output, kCompactionResponseQueueUrl);
   }
