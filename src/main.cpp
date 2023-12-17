@@ -51,6 +51,8 @@ string waitForResponse(const string &queueUrl);
 void sendMessage(const string &message, const string &queueUrl);
 
 int main() {
+  cout << "Init. Waiting for messages..." << endl;
+
   while (true) {
     string base64Input = waitForResponse(kCompactionRequestQueueUrl);
 
